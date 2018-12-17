@@ -1,8 +1,29 @@
 import numpy as np
 import random
+import json
+import matplotlib.pyplot as plt
 from collections import defaultdict
 from environment import Env
 
+
+# our custom list to store losses history
+history = {'losses': []}
+
+def plot_loss(history):
+    f, ax = plt.subplots(figsize=(7, 4))
+    f.canvas.set_window_title('Result')
+
+    ax.set_title('Training Loss')
+    ax.set_xlabel('episodes')
+
+    loss = history['losses']
+    epochs = range(len(loss))
+
+    ax.plot(epochs, loss, 'r', label='loss')
+
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
 
 # Monte Carlo Agent which learns every episodes from the sample
 class MCAgent:
@@ -24,6 +45,8 @@ class MCAgent:
     def update(self):
         G_t = 0
         visit_state = []
+        losses = list()
+
         for reward in reversed(self.samples):
             state = str(reward[0])
             if state not in visit_state:
@@ -32,6 +55,12 @@ class MCAgent:
                 value = self.value_table[state]
                 self.value_table[state] = (value +
                                            self.learning_rate * (G_t - value))
+                # append normalized losses to the list
+                losses.append(abs(G_t - value) / 100)
+
+        # save the loss to history
+        history["losses"].append(np.mean(losses))
+
 
     # get action for the state according to the q function table
     # agent pick action of epsilon-greedy policy
@@ -89,7 +118,7 @@ if __name__ == "__main__":
     env = Env()
     agent = MCAgent(actions=list(range(env.n_actions)))
 
-    for episode in range(10):
+    for episode in range(500):
         state = env.reset()
         action = agent.get_action(state)
 
@@ -108,4 +137,10 @@ if __name__ == "__main__":
                 print("episode : ", episode)
                 agent.update()
                 agent.samples.clear()
+                # writing
+                json.dump(agent.value_table, open("values.json", 'w'))
                 break
+
+    # writing
+    json.dump(history, open("history.json", 'w'))
+    plot_loss(history)
