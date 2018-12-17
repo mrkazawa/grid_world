@@ -1,29 +1,11 @@
 import numpy as np
 import random
 import json
+import sys
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from environment import Env
 
-
-# our custom list to store losses history
-history = {'losses': []}
-
-def plot_loss(history):
-    f, ax = plt.subplots(figsize=(7, 4))
-    f.canvas.set_window_title('Result')
-
-    ax.set_title('Training Loss')
-    ax.set_xlabel('episodes')
-
-    loss = history['losses']
-    epochs = range(len(loss))
-
-    ax.plot(epochs, loss, 'r', label='loss')
-
-    ax.legend()
-    plt.tight_layout()
-    plt.show()
 
 # Monte Carlo Agent which learns every episodes from the sample
 class MCAgent:
@@ -113,34 +95,82 @@ class MCAgent:
         return next_state
 
 
+# our custom list to store losses history
+history = {'losses': []}
+
+
+def plot_loss(history):
+    f, ax = plt.subplots(figsize=(7, 4))
+    f.canvas.set_window_title('Result')
+
+    ax.set_title('Training Loss')
+    ax.set_xlabel('episodes')
+
+    loss = history['losses']
+    epochs = range(len(loss))
+
+    ax.plot(epochs, loss, 'r', label='loss')
+
+    ax.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+def check_if_have_none_or_more_then_two_argument():
+    return len(sys.argv) < 2 or len(sys.argv) > 2
+
+
+def check_if_argument_value_invalid():
+    return sys.argv[1] != 'i' and sys.argv[1] != 'ii' and sys.argv[1] != 'iii'
+
+
+def exit_and_print_error():
+    sys.exit('You should specify one argument: i, ii, or iii')
+
+
 # main loop
 if __name__ == "__main__":
-    env = Env()
-    agent = MCAgent(actions=list(range(env.n_actions)))
+    if check_if_have_none_or_more_then_two_argument() or check_if_argument_value_invalid():
+        exit_and_print_error()
+    else:
+        scenario = sys.argv[1]
+        env = Env()
+        agent = MCAgent(actions=list(range(env.n_actions)))
 
-    for episode in range(500):
-        state = env.reset()
-        action = agent.get_action(state)
+        for episode in range(500):
+            # our custom decreasing epsilon trial
+            if scenario == "ii":
+                if episode == 100:
+                    agent.epsilon = 0.075
+                elif episode == 200:
+                    agent.epsilon = 0.05
+                elif episode == 300:
+                    agent.epsilon = 0.025
+                elif episode == 400:
+                    agent.epsilon = 0
 
-        while True:
-            env.render()
+            state = env.reset()
+            action = agent.get_action(state)
 
-            # forward to next state. reward is number and done is boolean
-            next_state, reward, done = env.step(action)
-            agent.save_sample(next_state, reward, done)
+            while True:
+                env.render()
 
-            # get next action
-            action = agent.get_action(next_state)
+                # forward to next state. reward is number and done is boolean
+                next_state, reward, done = env.step(action)
+                agent.save_sample(next_state, reward, done)
 
-            # at the end of each episode, update the q function table
-            if done:
-                print("episode : ", episode)
-                agent.update()
-                agent.samples.clear()
-                # writing
-                json.dump(agent.value_table, open("values.json", 'w'))
-                break
+                # get next action
+                action = agent.get_action(next_state)
 
-    # writing
-    json.dump(history, open("history.json", 'w'))
-    plot_loss(history)
+                # at the end of each episode, update the q function table
+                if done:
+                    print("episode : ", episode)
+                    agent.update()
+                    agent.samples.clear()
+                    # writing
+                    json.dump(agent.value_table, open("values.json", 'w'))
+                    break
+
+        # writing
+        json.dump(history, open("history.json", 'w'))
+        plot_loss(history)
