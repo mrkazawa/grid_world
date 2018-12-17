@@ -115,6 +115,7 @@ dmypy.json
 
 # my custom list
 .vscode
+**/.idea/
 examples/results/*
 examples/training_checkpoints/*
 ml_hw2_no9/results/*
