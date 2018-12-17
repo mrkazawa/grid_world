@@ -134,7 +134,7 @@ if __name__ == "__main__":
         exit_and_print_error()
     else:
         scenario = sys.argv[1]
-        env = Env()
+        env = Env(scenario)
         agent = MCAgent(actions=list(range(env.n_actions)))
 
         for episode in range(500):
