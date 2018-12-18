@@ -131,7 +131,7 @@ def learn(self, state, action, reward, next_state, next_action):
 In this first scenario, we run the original code from the
 [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/4-sarsa).
 
-First Stage | Last Stage
+First Stage | Episode 37
 :---: | :---:
 ![first](results/scenario1/first.png?raw=true "first") | ![last](results/scenario1/last.gif?raw=true "last")
 
@@ -197,7 +197,7 @@ In this scenario, we introduce one new triangle to the environment. We put the l
 starting location at grid `(2,2)`. Our original intention in choosing this location is to make the agent difficult to reach
 the `circle` by continuously falling to the trap when he explores.
 
-First Stage | Last Stage
+First Stage | Episode 26
 :---: | :---:
 ![first](results/scenario2/first.png?raw=true "first") | ![last](results/scenario2/last.gif?raw=true "last")
 
@@ -214,3 +214,27 @@ higher policy.
 Even though the agent is able to find the shortest path to solve the problems. We have to mention that
 the probability that grid `(3,1)` or `(1,3)` to be blocked is higher in this scenario because of the greater chance that the
 agent will fall to the three triangles.
+
+## Scenario 3 - Cliff Walking
+
+In this scenario, we introduce one new environment that represents the Cliff Walking problem.
+We put the rectangle at the starting point at grid `(1,1)`. Three triangles at grid `(2,1)`, `(3,1)`, `(4,1)` respectively.
+Finally, we place the circle at grid `(5,1)`. The goal of this environment is the same to the Grid World.
+Move the rectangle to the circle and get `100` reward. However, when the rectangle reaches the triangle, it gets
+`-999` reward.
+
+First Stage | Episode 456
+:---: | :---:
+![first](results/scenario3/first.png?raw=true "first") | ![last](results/scenario3/last.gif?raw=true "last")
+
+At the left figure we can see the initialization stage of the program. The policy for each grid in the
+picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
+reach the `circle`.
+
+The figure in the right show the states at `episode 456`.
+Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(2,4)`
+to `(3,4)` to `(4,4)` to `(4,3)` to `(5,3)` to `(5,2)` and finally `(5,1)`. This is the path that the agent have explored
+and learnt during the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
+higher policy.
+
+> In this example. we can clearly see that the policy is updated when the rectangle moves through the particular state

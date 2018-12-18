@@ -70,7 +70,7 @@ if __name__ == "__main__":
         agent = SARSAgent(actions=list(range(env.n_actions)))
         run_time = time.time()
 
-        for episode in range(50):
+        for episode in range(500):
             # reset environment and initialize state
             start_time = time.time()
             state = env.reset()

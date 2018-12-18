@@ -35,12 +35,20 @@ class Env(tk.Tk):
             canvas.create_line(x0, y0, x1, y1)
 
         # add img to canvas
-        self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
-        self.triangle1 = canvas.create_image(250, 150, image=self.shapes[1])
-        self.triangle2 = canvas.create_image(150, 250, image=self.shapes[1])
-        if self.scenario == "ii":
-            self.triangle3 = canvas.create_image(150, 150, image=self.shapes[1])
-        self.circle = canvas.create_image(250, 250, image=self.shapes[2])
+        if self.scenario == "iii":
+            # cliff walking
+            self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
+            self.triangle1 = canvas.create_image(150, 50, image=self.shapes[1])
+            self.triangle2 = canvas.create_image(250, 50, image=self.shapes[1])
+            self.triangle3 = canvas.create_image(350, 50, image=self.shapes[1])
+            self.circle = canvas.create_image(450, 50, image=self.shapes[2])
+        else:
+            self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
+            self.triangle1 = canvas.create_image(250, 150, image=self.shapes[1])
+            self.triangle2 = canvas.create_image(150, 250, image=self.shapes[1])
+            if self.scenario == "ii":
+                self.triangle3 = canvas.create_image(150, 150, image=self.shapes[1])
+            self.circle = canvas.create_image(250, 250, image=self.shapes[2])
 
         # pack all
         canvas.pack()
@@ -122,7 +130,19 @@ class Env(tk.Tk):
         next_state = self.canvas.coords(self.rectangle)
 
         # reward function
-        if self.scenario == "ii":
+        if self.scenario == "iii":
+            if next_state == self.canvas.coords(self.circle):
+                reward = 100
+                done = True
+            elif next_state in [self.canvas.coords(self.triangle1),
+                                self.canvas.coords(self.triangle2),
+                                self.canvas.coords(self.triangle3)]:
+                reward = -999
+                done = True
+            else:
+                reward = 0
+                done = False
+        elif self.scenario == "ii":
             if next_state == self.canvas.coords(self.circle):
                 reward = 100
                 done = True
