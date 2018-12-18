@@ -56,7 +56,7 @@ def get_action(self, state):
 
 There are two things that may happen when an agent proceed to the `next_state` in an episode:
 * **Exploration**. The epsilon greedy approach takes a `random` number and compare it with the `epsilon`. If the
-`random` is smaller that`epsilon` then the agent will pick one action randomly.
+`random` is smaller that `epsilon` then the agent will pick one action randomly.
 * **Exploitation**. The agent will look up for the `next_state` from the environment and get the `value_table` for
 the `next_state`. Then, the agent will pick the action that has the
 `maximum value`. If multiple action with the same maximum value exists, the agent will pick a random action based on
@@ -189,6 +189,7 @@ the training. We can see that this path contains grids with higher values. When 
 the agent will choose these grids over the others and eventually reaches the `circle`.
 
 > The grids with the value of 0 means that during the training, the agent never visit those grids.
+
 
 ![loss](results/scenario1/loss.png?raw=true "loss")
 

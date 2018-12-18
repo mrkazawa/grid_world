@@ -1,0 +1,163 @@
+# Machine Learning HW 4 - SARSA
+
+[![build](https://img.shields.io/badge/build-pass-green.svg)]()
+[![code](https://img.shields.io/badge/code-python3.5-yellowgreen.svg)]()
+
+This repository contains our code to answer the Machine Learning class Homework 4.
+We will train agent to play **Grid World** by using the **SARSA** algorithm.
+Our code is a modification based on the code available from the
+[RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/4-sarsa)
+
+## How to run
+
+You can run the program by executing the following commands:
+
+```shell
+cd YOUR_DIR
+python mc_agent.py i # to run scenario 1 (normal)
+python mc_agent.py ii # to run scenario 2 (add one more triangle)
+python mc_agent.py iii # to run scenario 3 (cliff walking env)
+```
+
+## Code Breakdown
+
+We are going to briefly explain some of the important parts of the code that is related to the
+SARSA algorithm in general.
+
+### Agent's Global Variables
+
+```python
+self.actions = actions
+self.learning_rate = 0.01
+self.discount_factor = 0.9
+self.epsilon = 0.1
+self.q_table = defaultdict(lambda: [0.0, 0.0, 0.0, 0.0])
+```
+
+The `actions` are the list of available actions from the grid world, which is `['u', 'd', 'l', 'r']` up, down, left,
+right respectively. The `learning rate` and `discount_factor` are the parameters to update the `q_table`. The
+`epsilon` is used for the epsilon greedy approach. Lastly the `q_table` is initialized with the number of `0.0` for
+all possible actions. We can think of `q_table` as `policy_table` in policy iteration algorithm.
+
+### Epsilon Greedy -- Determine the action to the next state
+
+```python
+def get_action(self, state):
+    if np.random.rand() < self.epsilon:
+        # take random action
+        action = np.random.choice(self.actions)
+    else:
+        # take action according to the q function table
+        state_action = self.q_table[state]
+        action = self.arg_max(state_action)
+    return action
+```
+
+There are two things that may happen when an agent proceed to the `next_state` in an episode:
+* **Exploration**. The epsilon greedy approach takes a `random` number and compare it with the `epsilon`. If the
+`random` is smaller that `epsilon` then the agent will pick one action randomly.
+* **Exploitation**. The agent will get all action from the `q_table` for
+the `next_state`. Then, the agent will pick the action that has the `maximum value`.
+If multiple action with the same maximum value exists, the agent will pick a random action based on
+those available maximum actions.
+
+So, the role of `epsilon` in this example is to give the agent chance to explore the environment (10% chance in this
+example). If the `epsilon` is extremely low (or set to 0) than the agent will have less chance (or no chance) to
+explore and the `q_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see many
+variance or alternatives in the episodes. In other words, the agent will not be flexible.
+
+### Move to the next state -- Determine the reward
+
+```python
+# reward function
+if next_state == self.canvas.coords(self.circle):
+    reward = 100
+    done = True
+elif next_state in [self.canvas.coords(self.triangle1),
+                    self.canvas.coords(self.triangle2)]:
+    reward = -100
+    done = True
+else:
+    reward = 0
+    done = False
+```
+
+During an episode, the agent will keep on moving to the next state until it reaches either the circle grid
+or the triangle grid. When the agent reaches circle, it gets `100` as a reward. However, when it reaches
+triangle, it gets `-100` as a reward. Otherwise, the agent has not reached one of the possible endings. Thus,
+it gets `0` as a reward.
+
+### Updating the q_table at each step
+
+```python
+# take action and proceed one step in the environment
+next_state, reward, done = env.step(action)
+next_action = agent.get_action(str(next_state))
+
+# with sample <s,a,r,s',a'>, agent learns new q function
+agent.learn(str(state), action, reward, str(next_state), next_action)
+
+state = next_state
+action = next_action
+```
+
+The difference between SARSA and
+[Monte Carlo](https://github.com/mrkazawa/grid_world/tree/master/monte_carlo)
+method is the time when the update is conducted. SARSA updates the table after each step when the agent
+move from one state to another state. Meanwhile, Monte Carlo updates only when an episode finished.
+
+First the agent has to get the `current state (S)` and the `action (A)` from the current state.
+Then, it does the action and get the `reward (R)` and the `next state (S')`.
+Lastly, it needs to determine the `action (A')` for the next state.
+
+By using all of those information, the agent can update the q_table. After the value is updated,
+the `next state (S')` and the `next action (A')` will be the `current state (S)` and `current action (A)`.
+Then, the program continue following the same logic.
+
+The policy in `q_table` will be updated following the SARSA equation as follows:
+
+```python
+# with sample <s, a, r, s', a'>, learns new q function
+def learn(self, state, action, reward, next_state, next_action):
+    current_q = self.q_table[state][action]
+    next_state_q = self.q_table[next_state][next_action]
+    new_q = (current_q + self.learning_rate *
+            (reward + self.discount_factor * next_state_q - current_q))
+    self.q_table[state][action] = new_q
+```
+
+
+
+## SARSA Limitation
+
+If you are **unlucky** the agent can be really bad at figuring out the solution for this
+Grid World problem. Our lemma is the followings:
+
+> The agent can be **really bad** if he falls to the trap (triangle) at the **early stage many times**
+
+Some of our trials struggle with this condition. The agent keeps end up to the triangles many times
+at the early stage. This makes the policy at the grid near to the triangle really bad and the agent
+most likely will choose not go to that grid (**Even though it is the only way to go to the circle!**)
+
+![loss](results/block.jpg?raw=true "loss")
+
+Assuming that the starting point is grid `(1,1)`, then there are two crucial grids when dealing Grid World.
+Those grids are grid `(3,1)` and `(1,3)`. These grids are the narrow path to reach the circle from the
+starting point. When the agent keeps falling to the trap, **those grids can be blocked** as depicted
+in the Figure above.
+
+* The policy to move **right** at grid `(2,1)` is `-0.02`, which is the lowest value
+compared to the other alternative actions. This makes the path to grid `(3,1)` is **blocked**.
+* The policy to move **down** at grid `(1,2)` is also `-0.02`, which is the lowest value
+among all other alternative actions. This makes the path to grid `(1,3)` is **blocked**.
+
+The solution to break this block is that when you are at grid `(2,1)` or `(1,2)` you must be
+**VERY LUCKY** not only to hit the `epsilon` but also to get the random action correct (`right` or `down`).
+Moreover, we log the time for the agent to finish an episode. Some of them are very huge number because of this
+problems. We put three most high number time logs (in seconds) over 50 episodes below.
+
+```
+episode : 18 --- time : 178.0
+episode : 43 --- time : 273.0
+episode : 47 --- time : 274.0
+```
