@@ -15,7 +15,8 @@ You can run the program by executing the following commands:
 ```shell
 cd YOUR_DIR
 python mc_agent.py i # to run scenario 1 (normal)
-python mc_agent.py ii # to run scenario 2 (add one more triangle)
+python mc_agent.py ii # to run scenario 2 (decreasing epsilon)
+python mc_agent.py iii # to run scenario 3 (add one more triangle)
 ```
 
 ## Code Breakdown
@@ -186,6 +187,8 @@ Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` t
 `(4,2)` to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
 the training. We can see that this path contains grids with higher values. When following the greedy policy,
 the agent will choose these grids over the others and eventually reaches the `circle`.
+
+> The grids with the value of 0 means that during the training, the agent never visit those grids.
 
 ![loss](results/scenario1/loss.png?raw=true "loss")
 
