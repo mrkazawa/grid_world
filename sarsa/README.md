@@ -190,3 +190,27 @@ episode : 18 --- time : 178.0
 episode : 43 --- time : 273.0
 episode : 47 --- time : 274.0
 ```
+
+## Scenario 2 - Add one more triangle
+
+In this scenario, we introduce one new triangle to the environment. We put the location of the new triangle very close to the
+starting location at grid `(2,2)`. Our original intention in choosing this location is to make the agent difficult to reach
+the `circle` by continuously falling to the trap when he explores.
+
+First Stage | Last Stage
+:---: | :---:
+![first](results/scenario2/first.png?raw=true "first") | ![last](results/scenario2/last.gif?raw=true "last")
+
+At the left figure we can see the initialization stage of the program. The policy for each grid in the
+picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
+reach the `circle`.
+
+The figure in the right show the states at `episode 26`.
+Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to `(4,2)`
+to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
+higher policy.
+
+Even though the agent is able to find the shortest path to solve the problems. We have to mention that
+the probability that grid `(3,1)` or `(1,3)` to be blocked is higher in this scenario because of the greater chance that the
+agent will fall to the three triangles.

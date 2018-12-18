@@ -11,8 +11,9 @@ WIDTH = 5  # grid width
 
 
 class Env(tk.Tk):
-    def __init__(self):
+    def __init__(self, scenario):
         super(Env, self).__init__()
+        self.scenario = scenario
         self.action_space = ['u', 'd', 'l', 'r']
         self.n_actions = len(self.action_space)
         self.title('SARSA')
@@ -37,6 +38,8 @@ class Env(tk.Tk):
         self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
         self.triangle1 = canvas.create_image(250, 150, image=self.shapes[1])
         self.triangle2 = canvas.create_image(150, 250, image=self.shapes[1])
+        if self.scenario == "ii":
+            self.triangle3 = canvas.create_image(150, 150, image=self.shapes[1])
         self.circle = canvas.create_image(250, 250, image=self.shapes[2])
 
         # pack all
@@ -119,16 +122,29 @@ class Env(tk.Tk):
         next_state = self.canvas.coords(self.rectangle)
 
         # reward function
-        if next_state == self.canvas.coords(self.circle):
-            reward = 100
-            done = True
-        elif next_state in [self.canvas.coords(self.triangle1),
-                            self.canvas.coords(self.triangle2)]:
-            reward = -100
-            done = True
+        if self.scenario == "ii":
+            if next_state == self.canvas.coords(self.circle):
+                reward = 100
+                done = True
+            elif next_state in [self.canvas.coords(self.triangle1),
+                                self.canvas.coords(self.triangle2),
+                                self.canvas.coords(self.triangle3)]:
+                reward = -100
+                done = True
+            else:
+                reward = 0
+                done = False
         else:
-            reward = 0
-            done = False
+            if next_state == self.canvas.coords(self.circle):
+                reward = 100
+                done = True
+            elif next_state in [self.canvas.coords(self.triangle1),
+                                self.canvas.coords(self.triangle2)]:
+                reward = -100
+                done = True
+            else:
+                reward = 0
+                done = False
 
         next_state = self.coords_to_state(next_state)
 
