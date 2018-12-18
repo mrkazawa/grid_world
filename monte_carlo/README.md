@@ -196,3 +196,48 @@ In the figure, we can see several spikes occurred during the training. This spik
 the agent choose to **explore** instead of **exploit** (Remember we use epsilon `0.1` therefore we have `10%`
 chance to explore even though at the later episodes, it should not need to explore anymore)
 
+## Scenario 2 - Decreasing epsilon as the episodes continue
+
+In this scenario we are going to run a simple epsilon modification to the original code.
+Our lemma is the following:
+
+> The agent should do less exploration as he gets better in predicting the value
+
+Therefore we decrease the epsilon value as the episodes increase. When it reaches 100 episodes,
+the epsilon will be set to `0.075` and then decreased to `0.05` at 200 episodes, `0.025` at 300 episodes.
+Finally, we dont use epsilon (full greedy) at the last 100 episodes.
+
+```python
+# our custom decreasing epsilon trial
+if scenario == "ii":
+    if episode == 100:
+        agent.epsilon = 0.075
+    elif episode == 200:
+        agent.epsilon = 0.05
+    elif episode == 300:
+        agent.epsilon = 0.025
+    elif episode == 400:
+        agent.epsilon = 0
+```
+
+First Stage | Last Stage
+:---: | :---:
+![first](results/scenario2/env.png?raw=true "first") | ![last](results/scenario2/heat_map.png?raw=true "last")
+
+The figure in the right show the updated `value_table` after `500 episodes`. Assuming the starting point is grid `(1,1)`,
+the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(2,4)` to
+`(3,4)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+the training. We can see that this path contains grids with higher values. This path is **different** from
+the path in the *scenario 1*. Thus, we can conclude that the agent can choose one among all of the possible scenarios.
+
+![loss](results/scenario2/loss.png?raw=true "loss")
+
+In our previous scenario, we state that `the spike happens in the loss chart is due to the epsilon value`.
+In this scenario we can surely confirm that statement. We can see from the figure that spikes still happens however
+the frequency of the spike decreases as the episodes continue. This happens as the agent has lesser chance to explore
+in the later episodes. After 400 episodes, we can see that we cannot find any spikes in the chart because at that moment
+the agent is at `full greedy` or `full exploit` mode.
+
+### Scenario 3 - Add one more triangle
+
+
