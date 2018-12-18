@@ -238,6 +238,29 @@ the frequency of the spike decreases as the episodes continue. This happens as t
 in the later episodes. After 400 episodes, we can see that we cannot find any spikes in the chart because at that moment
 the agent is at `full greedy` or `full exploit` mode.
 
-### Scenario 3 - Add one more triangle
+## Scenario 3 - Add one more triangle
 
+In this last scenario, we introduce one new triangle to the environment. We put the location of the new triangle very close to the
+starting location at grid `(2,2)`. Our original intention in choosing this location is to make the agent difficult to reach
+the `circle` by continuously falling to the trap when he explores. However, the agent can still be able to reach the destination.
 
+First Stage | Last Stage
+:---: | :---:
+![first](results/scenario3/env.png?raw=true "first") | ![last](results/scenario3/heat_map.png?raw=true "last")
+
+The figure in the right show the updated `value_table` after `500 episodes`. Assuming the starting point is grid `(1,1)`,
+the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to `(5,1)` to `(5,2)` to `(5,3)` to
+`(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+the training. We can see that this path contains grids with higher values. This path is **different** from
+the path in the *scenario 1* and *scenario 2*.
+
+This environment originally can be solved by 6 moves. However, in this scenario the agent solved it in 8 moves.
+The solution depends on the exploration. From grid `(4,1)` the agent have two choices: move to grid `(5,1)` or `(4,2)`.
+Based on our training, the agent discovered the `circle` when he moved to `(5,1)`.
+Therefore the value in `(5,1)` updated sooner than `(4,2)`. When grid `(5,1)` receives more visit by
+the agent over multiple episodes, the value for `(5,1)` will keep increasing and eventually grid `(4,2)` will be `ignored`.
+
+![loss](results/scenario3/loss.png?raw=true "loss")
+
+The figure depicts the loss for this scenario. However, there is nothing more significant can be found from this figure
+because it is relatively similar to the one in the *scenario 1*.
