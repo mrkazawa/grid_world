@@ -54,6 +54,7 @@ class SARSAgent:
 if __name__ == "__main__":
     env = Env()
     agent = SARSAgent(actions=list(range(env.n_actions)))
+    run_time = time.time()
 
     for episode in range(50):
         # reset environment and initialize state
@@ -83,3 +84,6 @@ if __name__ == "__main__":
                 elapsed_time = time.time() - start_time
                 print('episode : %s --- time : %s' % (episode, round(elapsed_time, 0)))
                 break
+
+    run_elapsed_time = time.time() - run_time
+    print('Running Time : %s' % (round(run_elapsed_time, 0)))

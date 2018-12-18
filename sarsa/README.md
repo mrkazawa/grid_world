@@ -126,14 +126,33 @@ def learn(self, state, action, reward, next_state, next_action):
     self.q_table[state][action] = new_q
 ```
 
+## Scenario 1 - Run the original code
 
+In this first scenario, we run the original code from the
+[RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/4-sarsa).
+
+First Stage | Last Stage
+:---: | :---:
+![first](results/scenario1/first.png?raw=true "first") | ![last](results/scenario1/last.gif?raw=true "last")
+
+At the left figure we can see the initialization stage of the program. The policy for each grid in the
+picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
+reach the `circle`.
+
+The figure in the right show the states at `episode 37`.
+Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to
+`(5,1)` to `(5,2)` to `(4,2)` to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
+higher policy.
+
+> The grids without any numbers mean that the agent never visit those grids.
 
 ## SARSA Limitation
 
 If you are **unlucky** the agent can be really bad at figuring out the solution for this
-Grid World problem. Our lemma is the followings:
+Grid World problem.
 
-> The agent can be **really bad** if he falls to the trap (triangle) at the **early stage many times**
+> **Lemma 1:** The agent can be **really bad** if he falls to the trap (triangle) at the **early stage many times**.
 
 Some of our trials struggle with this condition. The agent keeps end up to the triangles many times
 at the early stage. This makes the policy at the grid near to the triangle really bad and the agent
@@ -143,7 +162,17 @@ most likely will choose not go to that grid (**Even though it is the only way to
 
 Assuming that the starting point is grid `(1,1)`, then there are two crucial grids when dealing Grid World.
 Those grids are grid `(3,1)` and `(1,3)`. These grids are the narrow path to reach the circle from the
-starting point. When the agent keeps falling to the trap, **those grids can be blocked** as depicted
+starting point.
+
+> **Lemma 2:** The path at grid (3,1) can be blocked when the agent at grid (3,1) moves to grid (3,2).
+This action will make the policy to move **right** at grid (2,1) fall drastically if the policy to move
+**left** at grid (4,3) contains high number.
+
+> **Lemma 3:** The path at grid (1,3) can be blocked when the agent at grid (1,3) moves to grid (2,3).
+This action will make the policy to move **down** at grid (1,2) fall drastically if the policy to move
+**up** at grid (3,4) contains high number.
+
+When the agent keeps falling to the traps, **those grids can be blocked** as depicted
 in the Figure above.
 
 * The policy to move **right** at grid `(2,1)` is `-0.02`, which is the lowest value
@@ -153,8 +182,8 @@ among all other alternative actions. This makes the path to grid `(1,3)` is **bl
 
 The solution to break this block is that when you are at grid `(2,1)` or `(1,2)` you must be
 **VERY LUCKY** not only to hit the `epsilon` but also to get the random action correct (`right` or `down`).
-Moreover, we log the time for the agent to finish an episode. Some of them are very huge number because of this
-problems. We put three most high number time logs (in seconds) over 50 episodes below.
+Moreover, we log the time for the agent to finish an episode. Some of them are in very huge numbers because of this
+problem. We put three highest number time logs (in seconds) over 50 episodes below.
 
 ```
 episode : 18 --- time : 178.0
