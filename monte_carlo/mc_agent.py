@@ -107,9 +107,9 @@ def plot_loss(history):
     ax.set_xlabel('episodes')
 
     loss = history['losses']
-    epochs = range(len(loss))
+    episodes = range(len(loss))
 
-    ax.plot(epochs, loss, 'r', label='loss')
+    ax.plot(episodes, loss, 'r', label='loss')
 
     ax.legend()
     plt.tight_layout()
