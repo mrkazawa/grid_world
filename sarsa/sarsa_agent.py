@@ -77,6 +77,21 @@ if __name__ == "__main__":
             # get action of state from agent
             action = agent.get_action(str(state))
 
+            # make epsilon bigger so that the agent can understand the env better
+            if scenario == "iii":
+                # if episode is high enough, make it full greedy
+                # so we can easily capture the result
+                if episode <= 100:
+                    agent.epsilon = 0.5
+                elif 100 < episode <= 200:
+                    agent.epsilon = 0.4
+                elif 200 < episode <= 300:
+                    agent.epsilon = 0.2
+                elif 300 < episode <= 400:
+                    agent.epsilon = 0.1
+                if episode > 400:
+                    agent.epsilon = 0
+
             while True:
                 env.render()
 

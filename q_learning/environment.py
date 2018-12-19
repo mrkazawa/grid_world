@@ -11,8 +11,9 @@ WIDTH = 5  # grid width
 
 
 class Env(tk.Tk):
-    def __init__(self):
+    def __init__(self, scenario):
         super(Env, self).__init__()
+        self.scenario = scenario
         self.action_space = ['u', 'd', 'l', 'r']
         self.n_actions = len(self.action_space)
         self.title('Q Learning')
@@ -34,10 +35,20 @@ class Env(tk.Tk):
             canvas.create_line(x0, y0, x1, y1)
 
         # add img to canvas
-        self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
-        self.triangle1 = canvas.create_image(250, 150, image=self.shapes[1])
-        self.triangle2 = canvas.create_image(150, 250, image=self.shapes[1])
-        self.circle = canvas.create_image(250, 250, image=self.shapes[2])
+        if self.scenario == "iii":
+            # cliff walking
+            self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
+            self.triangle1 = canvas.create_image(150, 50, image=self.shapes[1])
+            self.triangle2 = canvas.create_image(250, 50, image=self.shapes[1])
+            self.triangle3 = canvas.create_image(350, 50, image=self.shapes[1])
+            self.circle = canvas.create_image(450, 50, image=self.shapes[2])
+        else:
+            self.rectangle = canvas.create_image(50, 50, image=self.shapes[0])
+            self.triangle1 = canvas.create_image(250, 150, image=self.shapes[1])
+            self.triangle2 = canvas.create_image(150, 250, image=self.shapes[1])
+            if self.scenario == "ii":
+                self.triangle3 = canvas.create_image(350, 150, image=self.shapes[1])
+            self.circle = canvas.create_image(250, 250, image=self.shapes[2])
 
         # pack all
         canvas.pack()
@@ -86,11 +97,6 @@ class Env(tk.Tk):
         y = int((coords[1] - 50) / 100)
         return [x, y]
 
-    def state_to_coords(self, state):
-        x = int(state[0] * 100 + 50)
-        y = int(state[1] * 100 + 50)
-        return [x, y]
-
     def reset(self):
         self.update()
         time.sleep(0.5)
@@ -99,7 +105,6 @@ class Env(tk.Tk):
         self.render()
         # return observation
         return self.coords_to_state(self.canvas.coords(self.rectangle))
-
 
     def step(self, action):
         state = self.canvas.coords(self.rectangle)
@@ -126,16 +131,41 @@ class Env(tk.Tk):
         next_state = self.canvas.coords(self.rectangle)
 
         # reward function
-        if next_state == self.canvas.coords(self.circle):
-            reward = 100
-            done = True
-        elif next_state in [self.canvas.coords(self.triangle1),
-                            self.canvas.coords(self.triangle2)]:
-            reward = -100
-            done = True
+        if self.scenario == "iii":
+            if next_state == self.canvas.coords(self.circle):
+                reward = 100
+                done = True
+            elif next_state in [self.canvas.coords(self.triangle1),
+                                self.canvas.coords(self.triangle2),
+                                self.canvas.coords(self.triangle3)]:
+                reward = -999
+                done = True
+            else:
+                reward = 0
+                done = False
+        elif self.scenario == "ii":
+            if next_state == self.canvas.coords(self.circle):
+                reward = 100
+                done = True
+            elif next_state in [self.canvas.coords(self.triangle1),
+                                self.canvas.coords(self.triangle2),
+                                self.canvas.coords(self.triangle3)]:
+                reward = -100
+                done = True
+            else:
+                reward = 0
+                done = False
         else:
-            reward = 0
-            done = False
+            if next_state == self.canvas.coords(self.circle):
+                reward = 100
+                done = True
+            elif next_state in [self.canvas.coords(self.triangle1),
+                                self.canvas.coords(self.triangle2)]:
+                reward = -100
+                done = True
+            else:
+                reward = 0
+                done = False
 
         next_state = self.coords_to_state(next_state)
         return next_state, reward, done

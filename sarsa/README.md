@@ -14,9 +14,9 @@ You can run the program by executing the following commands:
 
 ```shell
 cd YOUR_DIR
-python mc_agent.py i # to run scenario 1 (normal)
-python mc_agent.py ii # to run scenario 2 (add one more triangle)
-python mc_agent.py iii # to run scenario 3 (cliff walking env)
+python sarsa_agent.py i # to run scenario 1 (normal)
+python sarsa_agent.py ii # to run scenario 2 (add one more triangle)
+python sarsa_agent.py iii # to run scenario 3 (cliff walking env)
 ```
 
 ## Code Breakdown
@@ -223,7 +223,25 @@ Finally, we place the circle at grid `(5,1)`. The goal of this environment is th
 Move the rectangle to the circle and get `100` reward. However, when the rectangle reaches the triangle, it gets
 `-999` reward.
 
-First Stage | Episode 456
+To get the best result, we need to modify the `epsilon` to be dynamic. During the early episodes, we set the `epsilon`
+to a high number because we want the agent to understand the new environment really well. The `epsilon` will be decreased
+as the episodes increasing. Finally, after `400 episodes`, we set the `epsilon` to be `0`. This will make the agent
+become in a full exploit mode without any exploration.
+
+```python
+if episode <= 100:
+    agent.epsilon = 0.5
+elif 100 < episode <= 200:
+    agent.epsilon = 0.4
+elif 200 < episode <= 300:
+    agent.epsilon = 0.2
+elif 300 < episode <= 400:
+    agent.epsilon = 0.1
+if episode > 400:
+    agent.epsilon = 0
+```
+
+First Stage | Episode 403
 :---: | :---:
 ![first](results/scenario3/first.png?raw=true "first") | ![last](results/scenario3/last.gif?raw=true "last")
 
@@ -231,10 +249,11 @@ At the left figure we can see the initialization stage of the program. The polic
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 456`.
-Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(2,4)`
-to `(3,4)` to `(4,4)` to `(4,3)` to `(5,3)` to `(5,2)` and finally `(5,1)`. This is the path that the agent have explored
-and learnt during the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
+The figure in the right show the states at `episode 403`.
+Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(1,5)`
+to `(2,5)` to `(3,5)` to `(4,5)` to `(5,5)` to `(5,4)` to `(5,3)` to `(5,2)` and finally `(5,1)`.
+This is the path that the agent have explored and learnt during the training.
+We can see that this path follows the greedy policy, in which the agent will choose the action which has
 higher policy.
 
 > In this example. we can clearly see that the policy is updated when the rectangle moves through the particular state

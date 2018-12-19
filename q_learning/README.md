@@ -14,10 +14,9 @@ You can run the program by executing the following commands:
 
 ```shell
 cd YOUR_DIR
-python mc_agent.py i # to run scenario 1 (normal)
-python mc_agent.py ii # to run scenario 2 (decreasing epsilon)
-python mc_agent.py iii # to run scenario 3 (add one more triangle)
-python mc_agent.py iv # to run scenario 4 (cliff walking env)
+python q_agent.py i # to run scenario 1 (normal)
+python q_agent.py ii # to run scenario 2 (add one more triangle)
+python q_agent.py iii # to run scenario 3 (cliff walking env)
 ```
 
 ## Code Breakdown
@@ -127,4 +126,47 @@ it can be greedy (looking for the max action in the `q_table` for the next state
 * In **Q Learning**, the action for the next state `(A')` is not included in the `q_table` update.
 Instead, it uses the greedy approach to look for maximum policy in `q_table` for the next state.
 
+## Scenario 1 - Running the original code
 
+In this scenario we are going to run the original code from the
+[RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/5-q-learning).
+
+First Stage | Episode 293
+:---: | :---:
+![first](results/scenario1/env.png?raw=true "first") | ![last](results/scenario1/last.gif?raw=true "last")
+
+At the left figure we can see the initialization stage of the program. The policy for each grid in the
+picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
+reach the `circle`.
+
+The figure in the right show the states at `episode 293`.
+Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to
+`(2,4)` to `(3,4)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
+higher policy.
+
+> We can clearly see that the policy is updated when the rectangle moves through the particular state
+
+## Scenario 2 - Add one more triangle
+
+In this scenario, we introduce one new triangle to the environment. We put the location of the new triangle at grid `(4,2)`.
+Our intention in choosing this location is to make the shortest paths from the starting point to the destination become
+asymmetrical. We want to see if the agent can find the correct shortest path.
+
+First Stage | Episode 26
+:---: | :---:
+![first](results/scenario2/first.png?raw=true "first") | ![last](results/scenario2/last.gif?raw=true "last")
+
+At the left figure we can see the initialization stage of the program. The policy for each grid in the
+picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
+reach the `circle`.
+
+The figure in the right show the states at `episode 26`.
+Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to `(4,2)`
+to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
+higher policy.
+
+Even though the agent is able to find the shortest path to solve the problems. We have to mention that
+the probability that grid `(3,1)` or `(1,3)` to be blocked is higher in this scenario because of the greater chance that the
+agent will fall to the three triangles.
