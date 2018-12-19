@@ -22,7 +22,7 @@ python q_agent.py iii # to run scenario 3 (cliff walking env)
 ## Code Breakdown
 
 We are going to briefly explain some of the important parts of the code that is related to the
-SARSA algorithm in general.
+Q Learning algorithm in general.
 
 ### Agent's Global Variables
 
