@@ -3,7 +3,7 @@
 [![build](https://img.shields.io/badge/build-pass-green.svg)]()
 [![code](https://img.shields.io/badge/code-python3.5-yellowgreen.svg)]()
 
-This repository contains our code to answer the Machine Learning class Homework 3. We will train agent to play **Grid World** by using the **value iteration** algorithm. Our code is a modification based on the code available from the [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/2-value-iteration)
+This repository contains our code to answer the Machine Learning class Homework 3. We will train the agent to play **Grid World** by using the **value iteration** algorithm. Our code is a modification based on the code available from the [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/2-value-iteration)
 
 ## How to run
 
@@ -26,12 +26,12 @@ First Stage | Last Stage
 
 ```Time to converge: 6 iterations```
 
-At the first stage, all of the grids (or the `state`) will be initialize with the value of `0`. This value will be updated in every iteration which is one click of `Calculate` button. After the value function is converged, assuming that the starting location grid is `(1,1)` that is `(row,col)`, then we have two options:
+At the first stage, all of the grids (or the `state`) will be initialized with the value of `0`. This value will be updated in every iteration which is one click of the `Calculate` button. After the value function is converged, assuming that the starting location grid is `(1,1)` that is `(row,col)`, then we have two options:
 
 * move to grid `(1,2)` then following the red line to the destination.
 * move to grid `(2,1)` then following the blue line to the destination.
 
-These two options are possible becuase the world is symetricall from the distance perspective between the starting location to the destination. Thus, it will result in two shortest paths, 6 hops from start to finish. Both of the paths will have the same set of grids with the same value as follows:
+These two options are possible because the world is symmetrical from the distance perspective between the starting location to the destination. Thus, it will result in two shortest paths, 6 hops from start to finish. Both of the paths will have the same set of grids with the same value as follows:
 
 ```
              1.0  (6th grid)
@@ -63,7 +63,7 @@ First Stage | Last Stage
 
 ```Time to converge: 9 iterations (most of the time)```
 
-As we can see from the figure, the initial value is randomize `between 0 to 1`. Due to this randomization, the convergence time takes longer. The value iteration algorithm is struggling adjusting the value for each state. Furthermore, because the initial value is random, we observe sometimes the iteration can go up to 12 iterations before it converges. **Thus, we can conclude that initial value randomization is a bad idea for value iteration algorithm.**
+As we can see from the figure, the initial value is randomized `between 0 to 1`. Due to this randomization, the convergence time takes longer. The value iteration algorithm is struggling to adjust the value for each state. Furthermore, because the initial value is random, we observe sometimes the iteration can go up to 12 iterations before it converges. **Thus, we can conclude that initial value randomization is a bad idea for value iteration algorithm.**
 
 ## Scenario 3 - Add one more obstacle
 
@@ -81,8 +81,4 @@ First Stage | Last Stage
 
 ```Time to converge: 8 iterations```
 
-This scenario takes longer time to calculates all the values from each state, especially the bottom grids due to additional obstacle there. Assuming that the starting location grid is `(1,1)` that is `(row,col)`, then the value in the grid `(3,1)` will be last one to be updated. Furthermore, the `convereged value function` is different compared to Scenario #1. The only best option now is to move to the right directly from the start following the `red line` towards the destination as shown in the `Last Stage` figure.
-
-## Authors
-
-**Oktian Yustus Eko** - *Initial Work* - [mrkazawa](https://github.com/mrkazawa)
+This scenario takes a longer time to calculates all the values from each state, especially the bottom grids due to additional obstacle there. Assuming that the starting location grid is `(1,1)` that is `(row,col)`, then the value in the grid `(3,1)` will be the last one to be updated. Furthermore, the `converged value function` is different compared to Scenario #1. The only best option now is to move to the right from the start following the `red line` towards the destination as shown in the `Last Stage` figure.

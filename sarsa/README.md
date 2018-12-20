@@ -4,7 +4,7 @@
 [![code](https://img.shields.io/badge/code-python3.5-yellowgreen.svg)]()
 
 This repository contains our code to answer the Machine Learning class Homework 4.
-We will train agent to play **Grid World** by using the **SARSA** algorithm.
+We will train an agent to play **Grid World** by using the **SARSA** algorithm.
 Our code is a modification based on the code available from the
 [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/4-sarsa)
 
@@ -54,16 +54,17 @@ def get_action(self, state):
 ```
 
 There are two things that may happen when an agent proceed to the `next_state` in an episode:
+
 * **Exploration**. The epsilon greedy approach takes a `random` number and compare it with the `epsilon`. If the
 `random` is smaller that `epsilon` then the agent will pick one action randomly.
 * **Exploitation**. The agent will get all action from the `q_table` for
 the `next_state`. Then, the agent will pick the action that has the `maximum value`.
-If multiple action with the same maximum value exists, the agent will pick a random action based on
+If multiple actions with the same maximum value exists, the agent will pick a random action based on
 those available maximum actions.
 
 So, the role of `epsilon` in this example is to give the agent chance to explore the environment (10% chance in this
-example). If the `epsilon` is extremely low (or set to 0) than the agent will have less chance (or no chance) to
-explore and the `q_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see many
+example). If the `epsilon` is extremely low (or set to 0) then the agent will have less chance (or no chance) to
+explore and the `q_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see any
 variance or alternatives in the episodes. In other words, the agent will not be flexible.
 
 ### Move to the next state -- Determine the reward
@@ -104,15 +105,15 @@ action = next_action
 The difference between SARSA and
 [Monte Carlo](https://github.com/mrkazawa/grid_world/tree/master/monte_carlo)
 method is the time when the update is conducted. SARSA updates the table after each step when the agent
-move from one state to another state. Meanwhile, Monte Carlo updates only when an episode finished.
+moves from one state to another state. Meanwhile, Monte Carlo updates only when an episode finished.
 
-First the agent has to get the `current state (S)` and the `action (A)` from the current state.
-Then, it does the action and get the `reward (R)` and the `next state (S')`.
+First, the agent has to get the `current state (S)` and the `action (A)` from the current state.
+Then, it does the action and gets the `reward (R)` and the `next state (S')`.
 Lastly, it needs to determine the `action (A')` for the next state.
 
-By using all of those information, the agent can update the q_table. After the value is updated,
+By using all of that information, the agent can update the q_table. After the value is updated,
 the `next state (S')` and the `next action (A')` will be the `current state (S)` and `current action (A)`.
-Then, the program continue following the same logic.
+Then, the program continues following the same logic.
 
 The policy in `q_table` will be updated following the SARSA equation as follows:
 
@@ -135,17 +136,17 @@ First Stage | Episode 37
 :---: | :---:
 ![first](results/scenario1/first.png?raw=true "first") | ![last](results/scenario1/last.gif?raw=true "last")
 
-At the left figure we can see the initialization stage of the program. The policy for each grid in the
+At the left figure, we can see the initialization stage of the program. The policy for each grid in the
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 37`.
+The figure in the right shows the states in `episode 37`.
 Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to
-`(5,1)` to `(5,2)` to `(4,2)` to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+`(5,1)` to `(5,2)` to `(4,2)` to `(4,3)` and finally `(3,3)`. This is the path that the agent has explored and learned during
 the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
-higher policy.
+a higher policy.
 
-> The grids without any numbers mean that the agent never visit those grids.
+> The grids without any numbers mean that the agent never visits those grids.
 
 ## SARSA Limitation
 
@@ -156,7 +157,7 @@ Grid World problem.
 
 Some of our trials struggle with this condition. The agent keeps end up to the triangles many times
 at the early stage. This makes the policy at the grid near to the triangle really bad and the agent
-most likely will choose not go to that grid (**Even though it is the only way to go to the circle!**)
+most likely will choose not to go to that grid (**Even though it is the only way to go to the circle!**)
 
 ![loss](results/block.jpg?raw=true "loss")
 
@@ -166,11 +167,11 @@ starting point.
 
 > **Lemma 2:** The path at grid (3,1) can be blocked when the agent at grid (3,1) moves to grid (3,2).
 This action will make the policy to move **right** at grid (2,1) fall drastically if the policy to move
-**left** at grid (4,3) contains high number.
+**left** at grid (4,3) contains a high number.
 
 > **Lemma 3:** The path at grid (1,3) can be blocked when the agent at grid (1,3) moves to grid (2,3).
 This action will make the policy to move **down** at grid (1,2) fall drastically if the policy to move
-**up** at grid (3,4) contains high number.
+**up** at grid (3,4) contains a high number.
 
 When the agent keeps falling to the traps, **those grids can be blocked** as depicted
 in the Figure above.
@@ -180,10 +181,10 @@ compared to the other alternative actions. This makes the path to grid `(3,1)` i
 * The policy to move **down** at grid `(1,2)` is also `-0.02`, which is the lowest value
 among all other alternative actions. This makes the path to grid `(1,3)` is **blocked**.
 
-The solution to break this block is that when you are at grid `(2,1)` or `(1,2)` you must be
+The solution to breakthrough from this blockage is that when you are at grid `(2,1)` or `(1,2)` you must be
 **VERY LUCKY** not only to hit the `epsilon` but also to get the random action correct (`right` or `down`).
 Moreover, we log the time for the agent to finish an episode. Some of them are in very huge numbers because of this
-problem. We put three highest number time logs (in seconds) over 50 episodes below.
+problem. We put three highest number of time logs (in seconds) over 50 episodes below.
 
 ```
 episode : 18 --- time : 178.0
@@ -201,15 +202,15 @@ First Stage | Episode 26
 :---: | :---:
 ![first](results/scenario2/first.png?raw=true "first") | ![last](results/scenario2/last.gif?raw=true "last")
 
-At the left figure we can see the initialization stage of the program. The policy for each grid in the
+At the left figure, we can see the initialization stage of the program. The policy for each grid in the
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 26`.
+The figure in the right shows the states in `episode 26`.
 Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to `(4,2)`
-to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+to `(4,3)` and finally `(3,3)`. This is the path that the agent has explored and learned during
 the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
-higher policy.
+a higher policy.
 
 Even though the agent is able to find the shortest path to solve the problems. We have to mention that
 the probability that grid `(3,1)` or `(1,3)` to be blocked is higher in this scenario because of the greater chance that the
@@ -249,11 +250,11 @@ At the left figure we can see the initialization stage of the program. The polic
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 403`.
+The figure in the right shows the states in `episode 403`.
 Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(1,5)`
 to `(2,5)` to `(3,5)` to `(4,5)` to `(5,5)` to `(5,4)` to `(5,3)` to `(5,2)` and finally `(5,1)`.
-This is the path that the agent have explored and learnt during the training.
+This is the path that the agent has explored and learned during the training.
 We can see that this path follows the greedy policy, in which the agent will choose the action which has
-higher policy.
+a higher policy.
 
 > In this example. we can clearly see that the policy is updated when the rectangle moves through the particular state

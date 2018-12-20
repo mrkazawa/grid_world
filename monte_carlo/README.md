@@ -4,7 +4,7 @@
 [![code](https://img.shields.io/badge/code-python3.5-yellowgreen.svg)]()
 
 This repository contains our code to answer the Machine Learning class Homework 4.
-We will train agent to play **Grid World** by using the **Monte Carlo** algorithm.
+We will train an agent to play **Grid World** by using the **Monte Carlo** algorithm.
 Our code is a modification based on the code available from the
 [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/3-monte-carlo)
 
@@ -55,16 +55,17 @@ def get_action(self, state):
 ```
 
 There are two things that may happen when an agent proceed to the `next_state` in an episode:
+
 * **Exploration**. The epsilon greedy approach takes a `random` number and compare it with the `epsilon`. If the
 `random` is smaller that `epsilon` then the agent will pick one action randomly.
 * **Exploitation**. The agent will look up for the `next_state` from the environment and get the `value_table` for
 the `next_state`. Then, the agent will pick the action that has the
-`maximum value`. If multiple action with the same maximum value exists, the agent will pick a random action based on
+`maximum value`. If multiple actions with the same maximum value exists, the agent will pick a random action based on
 those available maximum actions.
 
 So, the role of `epsilon` in this example is to give the agent chance to explore the environment (10% chance in this
-example). If the `epsilon` is extremely low (or set to 0) than the agent will have less chance (or no chance) to
-explore and the `value_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see many
+example). If the `epsilon` is extremely low (or set to 0) then the agent will have less chance (or no chance) to
+explore and the `value_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see any
 variance or alternatives in the episodes. In other words, the agent will not be flexible.
 
 ### Move to the next state -- Determine the reward
@@ -133,14 +134,14 @@ self.value_table[state] = (value + self.learning_rate * (G_t - value))
 ### Our Modification - Calculate the mean loss and plot the chart
 
 Inspired by the neural network, we want to modify the code to calculate the `mean loss` per episode.
-First we calculate the loss per grid that the agent visits by using the following code
+First, we calculate the loss per grid that the agent visits by using the following code
 
 ```python
 # append normalized losses to the list
 losses.append(abs(G_t - value) / 100)
 ```
 
-At the end of the each episode, we calculate the mean of those losses that the agent visits.
+At the end of each episode, we calculate the mean of those losses that the agent visits.
 We store this mean per episode to the `history` object.
 
 ```python
@@ -170,46 +171,46 @@ def plot_loss(history):
 
 ## Scenario 1 - Running the original code
 
-In this scenario we are going to run the original code from the
+In this scenario, we are going to run the original code from the
 [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/3-monte-carlo).
 
 First Stage | Last Stage
 :---: | :---:
 ![first](results/scenario1/env.png?raw=true "first") | ![last](results/scenario1/heat_map.png?raw=true "last")
 
-At the left figure we can see the initialization stage of the program. The value for each grid in the
+At the left figure, we can see the initialization stage of the program. The value for each grid in the
 picture will be set to `0.0`. This value will be updated after each episode as the agent learning to
 reach the `circle`.
 
-The figure in the right show the updated `value_table` after `500 episodes`. The value where the `triangle`
+The figure in the right shows the updated `value_table` after `500 episodes`. The value where the `triangle`
 resides has minus value because the reward is `-100` and we do not want the agent to fall to it.
 Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to
-`(4,2)` to `(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+`(4,2)` to `(4,3)` and finally `(3,3)`. This is the path that the agent has explored and learned during
 the training. We can see that this path contains grids with higher values. When following the greedy policy,
 the agent will choose these grids over the others and eventually reaches the `circle`.
 
-> The grids with the value of 0 means that during the training, the agent never visit those grids.
+> The grids with the value of 0 means that during the training, the agent never visits those grids.
 
 
 ![loss](results/scenario1/loss.png?raw=true "loss")
 
-The training loss is depicted at the figure above. At the early episodes the losses were high because the
-agent could not get the prediction value number for each grid correctly. However as the episodes continue,
-we can clearly see that the agent is getting better at predicting the value and generating smaller number of losses.
+The training loss is depicted at the figure above. In the early episodes the losses were high because the
+agent could not get the prediction value number for each grid correctly. However, as the episodes continue,
+we can clearly see that the agent is getting better at predicting the value and generating a smaller number of losses.
 In the figure, we can see several spikes occurred during the training. This spikes happened when
-the agent choose to **explore** instead of **exploit** (Remember we use epsilon `0.1` therefore we have `10%`
+the agent chooses to **explore** instead of **exploit** (Remember we use epsilon `0.1`, therefore, we have `10%`
 chance to explore even though at the later episodes, it should not need to explore anymore)
 
 ## Scenario 2 - Decreasing epsilon as the episodes continue
 
-In this scenario we are going to run a simple epsilon modification to the original code.
+In this scenario, we are going to run a simple epsilon modification to the original code.
 Our lemma is the following:
 
 > The agent should do less exploration as he gets better in predicting the value
 
 Therefore we decrease the epsilon value as the episodes increase. When it reaches 100 episodes,
 the epsilon will be set to `0.075` and then decreased to `0.05` at 200 episodes, `0.025` at 300 episodes.
-Finally, we dont use epsilon (full greedy) at the last 100 episodes.
+Finally, we don't use epsilon (full greedy) at the last 100 episodes.
 
 ```python
 # our custom decreasing epsilon trial
@@ -228,16 +229,16 @@ First Stage | Last Stage
 :---: | :---:
 ![first](results/scenario2/env.png?raw=true "first") | ![last](results/scenario2/heat_map.png?raw=true "last")
 
-The figure in the right show the updated `value_table` after `500 episodes`. Assuming the starting point is grid `(1,1)`,
+The figure in the right shows the updated `value_table` after `500 episodes`. Assuming the starting point is grid `(1,1)`,
 the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(2,4)` to
-`(3,4)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+`(3,4)` and finally `(3,3)`. This is the path that the agent has explored and learned during
 the training. We can see that this path contains grids with higher values. This path is **different** from
-the path in the *scenario 1*. Thus, we can conclude that the agent can choose one among all of the possible scenarios.
+the path in *scenario 1*. Thus, we can conclude that the agent can choose one among all of the possible scenarios.
 
 ![loss](results/scenario2/loss.png?raw=true "loss")
 
 In our previous scenario, we state that `the spike happens in the loss chart is due to the epsilon value`.
-In this scenario we can surely confirm that statement. We can see from the figure that spikes still happens however
+In this scenario, we can surely confirm that statement. We can see from the figure that spikes still happen however
 the frequency of the spike decreases as the episodes continue. This happens as the agent has lesser chance to explore
 in the later episodes. After 400 episodes, we can see that we cannot find any spikes in the chart because at that moment
 the agent is at `full greedy` or `full exploit` mode.
@@ -252,19 +253,19 @@ First Stage | Last Stage
 :---: | :---:
 ![first](results/scenario3/env.png?raw=true "first") | ![last](results/scenario3/heat_map.png?raw=true "last")
 
-The figure in the right show the updated `value_table` after `500 episodes`. Assuming the starting point is grid `(1,1)`,
+The figure in the right shows the updated `value_table` after `500 episodes`. Assuming the starting point is grid `(1,1)`,
 the agent moves from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to `(5,1)` to `(5,2)` to `(5,3)` to
-`(4,3)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+`(4,3)` and finally `(3,3)`. This is the path that the agent has explored and learned during
 the training. We can see that this path contains grids with higher values. This path is **different** from
-the path in the *scenario 1* and *scenario 2*.
+the path in *scenario 1* and *scenario 2*.
 
-This environment originally can be solved by 6 moves. However, in this scenario the agent solved it in 8 moves.
-The solution depends on the exploration. From grid `(4,1)` the agent have two choices: move to grid `(5,1)` or `(4,2)`.
+This environment originally can be solved by 6 moves. However, in this scenario, the agent solved it in 8 moves.
+The solution depends on the exploration. From grid `(4,1)` the agent has two choices: move to grid `(5,1)` or `(4,2)`.
 Based on our training, the agent discovered the `circle` when he moved to `(5,1)`.
 Therefore the value in `(5,1)` updated sooner than `(4,2)`. When grid `(5,1)` receives more visit by
-the agent over multiple episodes, the value for `(5,1)` will keep increasing and eventually grid `(4,2)` will be `ignored`.
+the agent over multiple episodes, the value for `(5,1)` will keep increasing and eventually, grid `(4,2)` will be `ignored`.
 
 ![loss](results/scenario3/loss.png?raw=true "loss")
 
 The figure depicts the loss for this scenario. However, there is nothing more significant can be found from this figure
-because it is relatively similar to the one in the *scenario 1*.
+because it is relatively similar to the one in *scenario 1*.

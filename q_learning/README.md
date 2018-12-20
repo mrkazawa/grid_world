@@ -4,7 +4,7 @@
 [![code](https://img.shields.io/badge/code-python3.5-yellowgreen.svg)]()
 
 This repository contains our code to answer the Machine Learning class Homework 4.
-We will train agent to play **Grid World** by using the **Q Learning** algorithm.
+We will train an agent to play **Grid World** by using the **Q Learning** algorithm.
 Our code is a modification based on the code available from the
 [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/5-q-learning)
 
@@ -58,12 +58,12 @@ There are two things that may happen when an agent proceed to the `next_state` i
 `random` is smaller that `epsilon` then the agent will pick one action randomly.
 * **Exploitation**. The agent will get all action from the `q_table` for
 the `next_state`. Then, the agent will pick the action that has the `maximum value`.
-If multiple action with the same maximum value exists, the agent will pick a random action based on
+If multiple actions with the same maximum value exists, the agent will pick a random action based on
 those available maximum actions.
 
 So, the role of `epsilon` in this example is to give the agent chance to explore the environment (10% chance in this
-example). If the `epsilon` is extremely low (or set to 0) than the agent will have less chance (or no chance) to
-explore and the `q_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see many
+example). If the `epsilon` is extremely low (or set to 0) then the agent will have less chance (or no chance) to
+explore and the `q_table` will most likely to have `bias` from the previous episodes. Thus, we cannot see any
 variance or alternatives in the episodes. In other words, the agent will not be flexible.
 
 ### Move to the next state -- Determine the reward
@@ -100,10 +100,10 @@ agent.learn(str(state), action, reward, str(next_state))
 state = next_state
 ```
 
-First the agent has to get the `current state (S)` and the `action (A)` from the current state.
-Then, it does the action and get the `reward (R)` and the `next state (S')`. By using all of those information,
+First, the agent has to get the `current state (S)` and the `action (A)` from the current state.
+Then, it does the action and gets the `reward (R)` and the `next state (S')`. By using all of that information,
 the agent can update the `q_table`. After the value is updated, the `next state (S')` will be the `current state (S)`.
-Then, the program continue following the same logic.
+Then, the program continues following the same logic.
 
 The policy in `q_table` will be updated following the Q Learning equation as follows:
 
@@ -121,29 +121,29 @@ The difference between
 and Q Learning can be found in the action for the next state `(A')`
 
 * In **SARSA**, we include the action for the next state `(A')` to update the `q_table`. This
-action can be random (when the algorithm to determine next state hit the `epsilon`) or
+action can be random (when the algorithm to determine the next state hit the `epsilon`) or
 it can be greedy (looking for the max action in the `q_table` for the next state)
 * In **Q Learning**, the action for the next state `(A')` is not included in the `q_table` update.
-Instead, it uses the greedy approach to look for maximum policy in `q_table` for the next state.
+Instead, it uses the greedy approach to look for a maximum policy in `q_table` for the next state.
 
 ## Scenario 1 - Running the original code
 
-In this scenario we are going to run the original code from the
+In this scenario, we are going to run the original code from the
 [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/5-q-learning).
 
 First Stage | Episode 293
 :---: | :---:
 ![first](results/scenario1/first.png?raw=true "first") | ![last](results/scenario1/last.gif?raw=true "last")
 
-At the left figure we can see the initialization stage of the program. The policy for each grid in the
+At the left figure, we can see the initialization stage of the program. The policy for each grid in the
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 293`.
+The figure in the right shows the states in `episode 293`.
 Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to
-`(2,4)` to `(3,4)` and finally `(3,3)`. This is the path that the agent have explored and learnt during
+`(2,4)` to `(3,4)` and finally `(3,3)`. This is the path that the agent has explored and learned during
 the training. We can see that this path follows the greedy policy, in which the agent will choose the action which has
-higher policy.
+a higher policy.
 
 > We can clearly see that the policy is updated when the rectangle moves through the particular state
 
@@ -157,11 +157,11 @@ First Stage | Episode 376
 :---: | :---:
 ![first](results/scenario2/first.png?raw=true "first") | ![last](results/scenario2/last.gif?raw=true "last")
 
-At the left figure we can see the initialization stage of the program. The policy for each grid in the
+At the left figure, we can see the initialization stage of the program. The policy for each grid in the
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 376`.
+The figure in the right shows the states in `episode 376`.
 Assuming the starting point is grid `(1,1)`, we have two options:
 
 * Go through `(1,3)` the shortest path will be:
@@ -170,10 +170,10 @@ from grid `(1,1)` to `(1,2)` to `(1,3)` to `(1,4)` to `(2,4)` to `(3,4)` and fin
 from grid `(1,1)` to `(2,1)` to `(3,1)` to `(4,1)` to `(5,1)` to `(5,2)` to `(5,3)` to `(4,3)`and finally `(3,3)`.
 
 Based on our experiments, the agent found the correct shortest path in the early episodes.
-Therefore, it does not bother to find other alternatives since the agent also has relatively
+Therefore, it does not bother to find other alternatives since the agent also has a relatively
 small chance (10%) to explore.
 
-> If we run the experiment many times, we may find different behaviours.
+> If we run the experiment many times, we may find different behaviors.
 
 ## Scenario 3 - Cliff Walking
 
@@ -209,8 +209,8 @@ At the left figure we can see the initialization stage of the program. The polic
 picture will be set to `0.0` for all actions. These values will be updated after each move as the agent learning to
 reach the `circle`.
 
-The figure in the right show the states at `episode 405`.
+The figure in the right shows the states in `episode 405`.
 Assuming the starting point is grid `(1,1)`, the agent moves from grid `(1,1)` to `(1,2)` to `(2,2)` to `(3,2)`
-to `(4,2)` to `(5,2)` and finally `(5,1)`. This is the path that the agent have explored and learnt during the training.
+to `(4,2)` to `(5,2)` and finally `(5,1)`. This is the path that the agent has explored and learned during the training.
 We can see that this path follows the greedy policy, in which the agent will choose the action which has
-higher policy. If we compared this result with the one in SARSA, we can clearly say that Q Learning outperforms SARSA.
+a higher policy. If we compared this result with the one in SARSA, we can clearly say that Q Learning outperforms SARSA.

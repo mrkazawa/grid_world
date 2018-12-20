@@ -3,7 +3,7 @@
 [![build](https://img.shields.io/badge/build-pass-green.svg)]()
 [![code](https://img.shields.io/badge/code-python3.5-yellowgreen.svg)]()
 
-This repository contains our code to answer the Machine Learning class Homework 3. We will train agent to play **Grid World** by using the **policy iteration** algorithm. Our code is a modification based on the code available from the [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/1-policy-iteration)
+This repository contains our code to answer the Machine Learning class Homework 3. We will train an agent to play **Grid World** by using the **policy iteration** algorithm. Our code is a modification based on the code available from the [RLCode Github](https://github.com/rlcode/reinforcement-learning/tree/master/1-grid-world/1-policy-iteration)
 
 ## How to run
 
@@ -24,10 +24,10 @@ First Stage | Last Stage
 :---: | :---:
 ![1 First](capture/1_first.png?raw=true "1_first") | ![1 Final](capture/1_final.png?raw=true "1_final")
 
-* At the first stage, all of the grids (or the `state`) will be initialize with the value of `0`. This value will be updated in every iteration which is one click of `Evaluate` button.
-* The policy will initialized with the value of `0.25` for all actions. Every action has the same chance to be utilized to update the value. The policy will be updated in every click of `Improve` button.
+* At the first stage, all of the grids (or the `state`) will be initialized with the value of `0`. This value will be updated in every iteration which is one click of `Evaluate` button.
+* The policy will be initialized with the value of `0.25` for all actions. Every action has the same chance to be utilized to update the value. The policy will be updated in every click of `Improve` button.
 
-To get the most efficient result, we need to take turn in using `Evaluate` and `Improve` button. A user can click this button arbitrarily. Therefore, there is many combinations to iterate value and policy to achieve convergence. We run simple test to evaluate those combinations.
+To get the most efficient result, we need to take turns in using `Evaluate` and `Improve` button. A user can click this button arbitrarily. Therefore, there are many combinations to iterate value and policy to achieve convergence. We run a simple test to evaluate those combinations.
 
 Evaluate | Improve | Iteration to Converge
 :---: | :---: | :---:
@@ -37,14 +37,14 @@ Evaluate | Improve | Iteration to Converge
 4 click | 1 click | 3
 5 click | 1 click | 3
 
-We can see that the more frequent we update the value, the lesser the iteration needed to converge. We define iteration as `one click of Improve button, which is similar to one time policy update`. However, at some point updating the value more and more will not be efficient. As we see from table above that updating value 3 times in one iteration generates similar result as 5 times.
+We can see that the more frequent we update the value, the lesser the iteration needed to converge. We define iteration as `one click of Improve button, which is similar to one-time policy update`. However, at some point updating the value more and more will not be efficient. As we see from the table above that updating value 3 times in one iteration generates a similar result as 5 times.
 
 After the value function is converged, assuming that the starting location grid is `(1,1)` that is `(row,col)`, then we have two options:
 
 * move to grid `(1,2)` then following the red line to the destination.
 * move to grid `(2,1)` then following the blue line to the destination.
 
-These two options are possible becuase the world is symetricall from the distance perspective between the starting location to the destination. Thus, it will result in two shortest paths, 6 hops from start to finish. Both of the paths will have the same set of grids with the same value as follows:
+These two options are possible because the world is symmetrical from the distance perspective between the starting location to the destination. Thus, it will result in two shortest paths, 6 hops from start to finish. Both of the paths will have the same set of grids with the same value as follows:
 
 ```
              1.0  (6th grid)
@@ -68,7 +68,7 @@ def generate_random_value_table(self, width, height):
     return value_table
 ```
 
-Furthermore, we want to modify the initial value of the policy_table from `0.25` to random distribution that has the sum of `1` (because policy is represented as a probability). We use this code to generate random policy_table
+Furthermore, we want to modify the initial value of the policy_table from `0.25` to random distribution that has the sum of `1` (because the policy is represented as a probability). We use this code to generate random policy_table
 
 ```python
 def generate_random_policy_table(self, width, height):
@@ -91,7 +91,7 @@ Evaluate | Improve | Iteration to Converge
 4 click | 1 click | 3
 5 click | 1 click | 3
 
-As we can see from the figure, the initial value is randomize `between 0 to 1`. Then we test the program with different value and policy combinations. The results are shown in the figure. Surprisingly, those results are not different with the one from Scenario #1.
+As we can see from the figure, the initial value is randomized `between 0 to 1`. Then we test the program with different value and policy combinations. The results are shown in the figure. Surprisingly, those results are not different from the one from Scenario #1.
 
 ## Scenario 3 - Add one more obstacle
 
@@ -115,8 +115,4 @@ Evaluate | Improve | Iteration to Converge
 4 click | 1 click | 4
 5 click | 1 click | 4
 
-Assuming that the starting location grid is `(1,1)` that is `(row,col)`, then the value in the grid `(3,1)` will be last one to be updated. Furthermore, the `convereged value function` is different compared to Scenario #1. The only best option now is to move to the right directly from the start following the `red line` towards the destination as shown in the `Last Stage` figure.
-
-## Authors
-
-**Oktian Yustus Eko** - *Initial Work* - [mrkazawa](https://github.com/mrkazawa)
+Assuming that the starting location grid is `(1,1)` that is `(row,col)`, then the value in the grid `(3,1)` will be the last one to be updated. Furthermore, the `converged value function` is different compared to Scenario #1. The only best option now is to move to the right from the start following the `red line` towards the destination as shown in the `Last Stage` figure.
